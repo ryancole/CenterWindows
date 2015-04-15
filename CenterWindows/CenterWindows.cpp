@@ -33,7 +33,7 @@ BOOL CenterWindow(HWND hWnd, LONG taskbarHeight) {
 	auto left = floor(resolution.rcMonitor.left + (resolution.rcMonitor.right - resolution.rcMonitor.left - width) / 2.0);
 
 	// move the window to the calculate position
-	return SetWindowPos(hWnd, NULL, left, top, width, height, SWP_NOZORDER);
+	return SetWindowPos(hWnd, NULL, left, top, width, height, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
 BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam) {
