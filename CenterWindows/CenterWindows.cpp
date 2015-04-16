@@ -74,11 +74,19 @@ int main() {
 		return GetLastError();
 	}
 
+	// get the current foreground window
+	auto foreground = GetForegroundWindow();
+
 	// taskbar resolution difference
 	auto taskbarHeight = taskbarDimensions.bottom - taskbarDimensions.top;
 
 	// handle each window
 	if (EnumWindows(EnumWindowsProc, taskbarHeight) == FALSE) {
 		return GetLastError();
+	}
+
+	// bring proper window to foreground
+	if (foreground != NULL) {
+		SetForegroundWindow(foreground);
 	}
 }
