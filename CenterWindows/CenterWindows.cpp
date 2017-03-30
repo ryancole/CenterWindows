@@ -38,9 +38,9 @@ BOOL CenterWindow(HWND hWnd, LONG taskbarHeight) {
 
 BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam) {
 
-	// get the window's style information
-	auto style = GetWindowLong(hWnd, GWL_STYLE);
-	if (style == 0 || (style & (WS_CAPTION | WS_VISIBLE)) != (WS_CAPTION | WS_VISIBLE)) {
+	// we don't want to center anything that is not a window, and is not
+	// currently visible. so lets check for those two scenarios.
+	if (!IsWindow(hWnd) || !IsWindowVisible(hWnd)) {
 		return TRUE;
 	}
 
