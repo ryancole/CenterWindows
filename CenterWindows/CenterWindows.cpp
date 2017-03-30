@@ -1,5 +1,5 @@
 #include <math.h>
-#include <tchar.h>
+#include <stdio.h>
 #include <Windows.h>
 
 BOOL CenterWindow(HWND hWnd, LONG taskbarHeight) {
@@ -24,7 +24,7 @@ BOOL CenterWindow(HWND hWnd, LONG taskbarHeight) {
 
 	// get resolution details for the monitor
 	if (GetMonitorInfo(monitor, &resolution) == FALSE) {
-		_tprintf(L"failed to get monitor info (%ld)!\n", GetLastError());
+		printf("failed to get monitor info (%ld)!\n", GetLastError());
 		return false;
 	}
 
@@ -49,11 +49,11 @@ BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam) {
 	GetWindowText(hWnd, title, 64);
 
 	// let user know which window
-	_tprintf(L"centering `%s` ...\n", title);
+	printf("centering `%s` ...\n", title);
 
 	// center the given window
 	if (CenterWindow(hWnd, lParam) == FALSE) {
-		_tprintf(L"failed to set window position (%ld)!\n", GetLastError());
+		printf("failed to set window position (%ld)!\n", GetLastError());
 	}
 
 	// allow centering of more windows
@@ -63,7 +63,7 @@ BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam) {
 int main() {
 
 	// locate task bar
-	auto taskbar = FindWindow(L"Shell_TrayWnd", NULL);
+	auto taskbar = FindWindow("Shell_TrayWnd", NULL);
 	if (taskbar == NULL) {
 		return GetLastError();
 	}
