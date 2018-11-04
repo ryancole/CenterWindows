@@ -2,6 +2,24 @@
 #include <stdio.h>
 #include <Windows.h>
 
+BOOL IsWindowNormalState(HWND hWnd) {
+	WINDOWPLACEMENT placement;
+
+	placement.length = sizeof(WINDOWPLACEMENT);
+
+	if (GetWindowPlacement(hWnd, &placement) == 0) {
+		printf("failed to get window placement (%ld)!\n", GetLastError());
+		return false;
+	}
+
+	// a normal window is one that is not minimized or maximized
+	if (placement.showCmd == SW_SHOWNORMAL) {
+		return true;
+	}
+
+	return false;
+}
+
 BOOL CenterWindow(HWND hWnd, LONG taskbarHeight) {
 
 	// get the dimensions of the window
@@ -41,6 +59,12 @@ BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam) {
 	// we don't want to center anything that is not a window, and is not
 	// currently visible. so lets check for those two scenarios.
 	if (!IsWindow(hWnd) || !IsWindowVisible(hWnd)) {
+		return TRUE;
+	}
+
+	// we also don't want to touch windows that are either minimized or
+	// maximized
+	if (!IsWindowNormalState(hWnd)) {
 		return TRUE;
 	}
 
