@@ -72,7 +72,11 @@ BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam) {
 	TCHAR title[64];
 	GetWindowText(hWnd, title, 64);
 
-	// let user know which window
+	// if there's no title then skip the window i guess
+	if (strlen(title) == 0) {
+		return TRUE;
+	}
+
 	printf("centering `%s` ...\n", title);
 
 	// center the given window
