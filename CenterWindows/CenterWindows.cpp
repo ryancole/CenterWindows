@@ -236,7 +236,7 @@ BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam) {
 	return TRUE;
 }
 
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow) {
+int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int) {
 
 	// this is a gui app so no console window flashes up when it's launched
 	// from a shortcut or hotkey. if it was run from a terminal, write output
