@@ -1,0 +1,41 @@
+name: Release
+
+# push a version tag (e.g. `git tag v1.2.0 && git push origin v1.2.0`) to build
+# the release exes and publish them as a github release
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: microsoft/setup-msbuild@v3
+
+      - name: Get version from tag
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart("v")
+          if ($version -notmatch '^\d+\.\d+\.\d+$') {
+            throw "tag must look like v1.2.3, got ${{ github.ref_name }}"
+          }
+          "VERSION=$version" >> $env:GITHUB_ENV
+
+      - name: Build
+        run: |
+          foreach ($platform in "x64", "ARM64") {
+            msbuild CenterWindows.sln /p:Configuration=Release /p:Platform=$platform /p:AppVersion=$env:VERSION /m
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+          Copy-Item x64/Release/CenterWindows.exe CenterWindows-x64.exe
+          Copy-Item ARM64/Release/CenterWindows.exe CenterWindows-arm64.exe
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${{ github.ref_name }}" CenterWindows-x64.exe CenterWindows-arm64.exe --title "${{ github.ref_name }}" --generate-notes
